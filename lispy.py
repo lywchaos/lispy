@@ -2,6 +2,7 @@ from typing import List
 from env import global_env
 
 def eval(expression, env=global_env):
+    """可以看成是后序遍历"""
     if isinstance(expression, str):
         return env[expression]
     elif isinstance(expression, (int, float)):
@@ -17,6 +18,12 @@ def eval(expression, env=global_env):
         (_, exp) = expression
         exp = list(map(str, exp))
         return f" ( {' '.join(exp)} ) "
+    elif expression[0] == "set!":
+        (_, symbol, exp) = expression
+        if symbol not in env.keys():
+            print(f"Error, {symbol} not defined!")
+            return None
+        env[symbol] = eval(exp, env)
     else:
         proc = eval(expression[0], env)
         args = [eval(arg, env) for arg in expression[1:]]
@@ -37,6 +44,7 @@ def grammer_analyse(tokens: List[str]):
     if len(tokens) == 0:
         raise SyntaxError("unexpected EOF")
     # L1 级的递归下降语法分析
+    # 虽然返回的是　list，但可以看成抽象的 tree
     token = tokens.pop(0)
     if token == "(":
         L = []
