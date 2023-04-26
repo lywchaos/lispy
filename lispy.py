@@ -24,6 +24,10 @@ def eval(expression, env=global_env):
             print(f"Error, {symbol} not defined!")
             return None
         env[symbol] = eval(exp, env)
+    elif expression[0] == "lambda":
+        # 难以实现了，似乎只能用帖子里的方法来搞，
+        # 原因是，一个函数，实际上有自己的 env，而这里只能返回一个结果，而不能返回两个（exp 和 env）
+        (_, params, body) = expression
     else:
         proc = eval(expression[0], env)
         args = [eval(arg, env) for arg in expression[1:]]
