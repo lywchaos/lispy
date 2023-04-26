@@ -13,6 +13,10 @@ def eval(expression, env=global_env):
     elif expression[0] == "define":
         (_, symbol, exp) = expression
         env[symbol] = eval(exp, env)
+    elif expression[0] == "quote":
+        (_, exp) = expression
+        exp = list(map(str, exp))
+        return f" ( {' '.join(exp)} ) "
     else:
         proc = eval(expression[0], env)
         args = [eval(arg, env) for arg in expression[1:]]
@@ -50,7 +54,3 @@ def grammer_analyse(tokens: List[str]):
                 return float(token)
             except:
                 return token
-
-if __name__ == "__main__":
-    program = "(begin (define r 10) (* pi (* r r)))"
-    parse(program)
